@@ -282,70 +282,19 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'recipes.wsgi.application'
 
-# Database
-# Load settings from env files
-if os.getenv('DATABASE_URL'):
-    match = re.match(
-        r'(?P<schema>\w+):\/\/(?P<user>[\w\d_-]+)(:(?P<password>[^@]+))?@(?P<host>[^:/]+)(:(?P<port>\d+))?(\/(?P<database>[\w\d\/\._-]+))?',
-        os.getenv('DATABASE_URL')
-    )
-    settings = match.groupdict()
-    schema = settings['schema']
-    if schema.startswith('postgres'):
-        engine = 'django.db.backends.postgresql'
-    elif schema == 'sqlite':
-        engine = 'django.db.backends.sqlite3'
-    else:
-        raise Exception("Unsupported database schema: '%s'" % schema)
 
-    DATABASES = {
-        'default': {
-            'ENGINE': engine,
-            'OPTIONS': ast.literal_eval(os.getenv('DB_OPTIONS')) if os.getenv('DB_OPTIONS') else {},
-            'HOST': settings['host'],
-            'PORT': settings['port'],
-            'USER': settings['user'],
-            'PASSWORD': settings['password'],
-            'NAME': settings['database'],
-            'CONN_MAX_AGE': 600,
-        }
+DATABASES = {
+    'default': {
+        'ENGINE': os.getenv('DB_ENGINE') if os.getenv('DB_ENGINE') else 'django.db.backends.sqlite3',
+        'OPTIONS': ast.literal_eval(os.getenv('DB_OPTIONS')) if os.getenv('DB_OPTIONS') else {},
+        'HOST': os.getenv('POSTGRES_HOST'),
+        'PORT': os.getenv('POSTGRES_PORT'),
+        'USER': os.getenv('POSTGRES_USER'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
+        'NAME': os.getenv('POSTGRES_DB') if os.getenv('POSTGRES_DB') else 'db.sqlite3',
+        'CONN_MAX_AGE': 60,
     }
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': os.getenv('DB_ENGINE') if os.getenv('DB_ENGINE') else 'django.db.backends.sqlite3',
-            'OPTIONS': ast.literal_eval(os.getenv('DB_OPTIONS')) if os.getenv('DB_OPTIONS') else {},
-            'HOST': os.getenv('POSTGRES_HOST'),
-            'PORT': os.getenv('POSTGRES_PORT'),
-            'USER': os.getenv('POSTGRES_USER'),
-            'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
-            'NAME': os.getenv('POSTGRES_DB') if os.getenv('POSTGRES_DB') else 'db.sqlite3',
-            'CONN_MAX_AGE': 60,
-        }
-    }
-
-# Local testing DB
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'HOST': 'localhost',
-#         'PORT': 5432,
-#         'USER': 'postgres',
-#         'PASSWORD': 'postgres',  # set to local pw
-#         'NAME': 'tandoor_app',
-#         'CONN_MAX_AGE': 600,
-#     }
-# }
-
-# SQLite testing DB
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'OPTIONS': ast.literal_eval(os.getenv('DB_OPTIONS')) if os.getenv('DB_OPTIONS') else {},
-#         'NAME': 'db.sqlite3',
-#         'CONN_MAX_AGE': 600,
-#     }
-# }
+}
 
 CACHES = {
     'default': {
