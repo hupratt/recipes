@@ -287,8 +287,8 @@ DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
         "NAME": "recipes",
-        "USER": os.environ.get("POSTGRES_USER"),
-        "PASSWORD": os.environ.get("POSTGRES_PASSWORD"),
+        "USER": os.environ.get("dbuser"),
+        "PASSWORD": os.environ.get("dbpassword"),
         "HOST": "localhost",
         "PORT": 5432,
     }
