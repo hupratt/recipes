@@ -158,7 +158,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'cookbook.helper.scope_middleware.ScopeMiddleware',
+   # 'cookbook.helper.scope_middleware.ScopeMiddleware',
 ]
 
 if DEBUG:
@@ -284,17 +284,16 @@ WSGI_APPLICATION = 'recipes.wsgi.application'
 
 
 DATABASES = {
-    'default': {
-        'ENGINE': os.getenv('DB_ENGINE') if os.getenv('DB_ENGINE') else 'django.db.backends.sqlite3',
-        'OPTIONS': ast.literal_eval(os.getenv('DB_OPTIONS')) if os.getenv('DB_OPTIONS') else {},
-        'HOST': os.getenv('POSTGRES_HOST'),
-        'PORT': os.getenv('POSTGRES_PORT'),
-        'USER': os.getenv('POSTGRES_USER'),
-        'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
-        'NAME': os.getenv('POSTGRES_DB') if os.getenv('POSTGRES_DB') else 'db.sqlite3',
-        'CONN_MAX_AGE': 60,
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "recipes",
+        "USER": os.environ.get("POSTGRES_USER"),
+        "PASSWORD": os.environ.get("POSTGRES_PASSWORD"),
+        "HOST": "localhost",
+        "PORT": 5432,
     }
 }
+
 
 CACHES = {
     'default': {
